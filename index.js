@@ -1,6 +1,7 @@
 import TeleBot from 'telebot';
 import dotenv from 'dotenv'
 import request from 'request'
+import fetch from 'node-fetch'
 import dayjs from "dayjs"
 dotenv.config()
 
@@ -14,10 +15,10 @@ var bot = new TeleBot({
 
 bot.on('/view', function(msg) {
   var id = msg.from.id;
-  return bot.sendMessage(id, 'View', {
+  return bot.sendMessage(id, 'Here is toncells map', {
     replyMarkup: {
       inline_keyboard: [
-        [{ text: "test", web_app: { url: "https://app.toncells.org" } }],
+        [{ text: "open", web_app: { url: "https://app.toncells.org" } }],
       ]
     }
   }
@@ -35,7 +36,7 @@ bot.on('/random', function(msg) {
 
 bot.on('/start', function(msg) {
   var id = msg.from.id;
-  return bot.sendMessage(id, 'Use /view\nOr /random\nOr /last_changes');
+  return bot.sendMessage(id, 'Supported commands:\n /view\n /random\n /last_changes');
 });
 
 bot.on('/last_changes', function(msg) {
