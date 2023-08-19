@@ -1,5 +1,6 @@
-this telegram bot can write down your expences to google sheets<br />
-demo (ru) https://youtu.be/vBJ0yY5X99o
+This is telegram bot for toncells project
 
+link on the bot: https://t.me/toncellsbot
+link on the video of creation: https://youtube.com/sepezho/
 
 
