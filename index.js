@@ -1,7 +1,5 @@
 import TeleBot from 'telebot';
 import dotenv from 'dotenv'
-import request from 'request'
-import dayjs from "dayjs"
 dotenv.config()
 
 var bot = new TeleBot({
@@ -12,51 +10,24 @@ var bot = new TeleBot({
   retryTimeout: 5000 // Reconnecting timeout (in ms)
 });
 
-bot.on('/view', function(msg) {
+bot.on('/start', function(msg) {
   var id = msg.from.id;
-  return bot.sendMessage(id, 'View', {
+  return bot.sendMessage(id, `
+----editable nft collection----
+
+it is a field of cells (v1 includes 10,000 cells, while v2 includes 1,600 cells). each cell is a unique nft on ton. you can mint an nft and customize it however you wish. the image from this nft will be displayed on the main field. additionally, you can edit both the description and the name of your nft simply by clicking on the cell.
+
+history:
+* toncells v1 was archived on 21.12.2024
+* toncells v2 launched on 03.12.2023
+* toncells v1 launched on 22.03.2022`, {
     replyMarkup: {
       inline_keyboard: [
-        [{ text: "test", web_app: { url: "https://app.toncells.org" } }],
+        [{ text: "Open toncells v2 app", web_app: { url: "https://app.toncells.org" } }],
       ]
     }
   }
   );
-});
-
-bot.on('/random', function(msg) {
-  var id = msg.from.id;
-  return request("https://app.toncells.org:9917/API/getRandArea", {
-    encoding: null
-  }, (e, res, buff) => {
-    return bot.sendPhoto(id, Buffer.from(buff))
-  })
-});
-
-bot.on('/start', function(msg) {
-  var id = msg.from.id;
-  return bot.sendMessage(id, 'Use /view\nOr /random\nOr /last_changes');
-});
-
-bot.on('/last_changes', function(msg) {
-  var id = msg.from.id;
-
-
-  fetch("https://app.toncells.org:9917/API/getStatus", {
-    "headers": {
-      "accept": "*/*",
-    },
-  }).then(e => e.json()).then(e => {
-    const empty = '#1AB90C#1AB90C#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#1AB90C#1AB90C#1AB90C#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#1AB90C#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#1AB90C#1AB90C#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#1AB90C#1AB90C#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#1AB90C#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#1AB90C#1AB90C#1AB90C#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#FFFFFF#1AB90C#1AB90C'
-    const sorted = (e.status.filter(e => (e['Time'] > 10) && e["Image"] && e['Image'] !== empty).sort((a, b) => b['Time'] - a['Time']))
-    const ids = sorted.slice(0, 10).map(e => ([{ text: e.ID + ' / ' + dayjs(e.Time).format('HH:mm DD/MM/YYYY'), web_app: { url: `https://app.toncells.org/${e.ID}` } }]))
-
-    bot.sendMessage(id, 'This is list of last 10 changes on the map:', {
-      replyMarkup: {
-        inline_keyboard: ids
-      }
-    })
-  })
 });
 
 bot.connect();
